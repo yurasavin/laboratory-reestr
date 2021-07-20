@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+    django:
+        image: iriskin/laboratory-reestr:latest
+        volumes:
+            - ./static:/opt/app/static
+        env_file:
+            - .env
+        networks:
+            - train-hard
+        restart: always
+
+    django-static:
+        image: nginx:latest
+        depends_on:
+            - django
+        volumes:
+            - ./compose/nginx/conf.d:/etc/nginx/conf.d
+            - ./static:/www/static
+            - ./media:/www/media
+        ports:
+            - "80"
+        environment:
+            - NGINX_PORT=80
+        networks:
+            - train-hard
+        restart: always

@@ -1,0 +1,33 @@
+-r base.txt
+
+ptvsd==4.3.2
+django-debug-toolbar==2.2
+django-silk==4.0.1
+
+# Linting
+dlint
+flake8
+flake8-bandit
+flake8-blind-except
+flake8-builtins
+flake8-commas
+flake8-comprehensions
+flake8-debugger
+flake8-django
+flake8-eradicate
+flake8-import-order
+flake8-mutable
+flake8-print
+flake8-type-annotations
+flake8-quotes
+pep8-naming
+isort
+
+# Type checking
+mypy==0.812
+django-stubs==1.7.0
+djangorestframework-stubs==1.4.0
+
+#
+Faker==8.9.1
+factory-boy==3.2.0
