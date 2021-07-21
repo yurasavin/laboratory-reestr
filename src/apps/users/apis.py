@@ -20,7 +20,6 @@ class UserGetMeView(viewsets.ViewSet):
         def get_name(self, instance):
             return instance.get_full_name()
 
-
     @action(detail=False)
     def me(self, request):
         serializer = self.OutputSerializer(request.user)

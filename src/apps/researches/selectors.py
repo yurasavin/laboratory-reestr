@@ -1,8 +1,9 @@
 import django_filters
 
 from django.contrib.postgres.search import SearchVector
+from django.db.models import Count, Q
 
-from apps.researches.models import Research
+from apps.researches.models import Research, ResearchResult
 
 
 class BaseResearchFilter(django_filters.FilterSet):
@@ -16,9 +17,8 @@ class BaseResearchFilter(django_filters.FilterSet):
 
 def researches_search(*, qs, searches):
     searches_map = {
-        'search_num': lambda qs, val: qs.annotate(
-            search_num=SearchVector('daily_num', 'total_num'),
-        ).filter(search_num__contains=val),
+        'search_num': lambda qs, val: qs.filter(
+            Q(daily_num=val) | Q(total_num=val)),
 
         'search_patient': lambda qs, val: qs.annotate(
             search_patient=SearchVector(
@@ -37,7 +37,8 @@ def researches_search(*, qs, searches):
     for search_name in searches:
         search_func = searches_map[search_name]
         search_value = searches[search_name]
-        qs = search_func(qs, search_value)
+        for value in search_value.split():
+            qs = search_func(qs, value)
 
     return qs
 
@@ -59,3 +60,48 @@ def researches_list(*, filters_and_searches=None):
     qs = researches_search(qs=qs, searches=searches)
 
     return qs
+
+
+def researches_stats():
+    researches_stats = (Research.objects
+        .values('collect_date__month', 'collect_date__year')
+        .annotate(
+            positive_count=Count('id', filter=Q(result=ResearchResult.POSITIVE)),
+            negative_count=Count('id', filter=Q(result=ResearchResult.NEGATIVE)),
+        )
+        .order_by('collect_date__year', 'collect_date__month')
+    )
+    months_map = {
+        1: 'Январь',
+        2: 'Февраль',
+        3: 'Март',
+        4: 'Апрель',
+        5: 'Май',
+        6: 'Июнь',
+        7: 'Июль',
+        8: 'Август',
+        9: 'Сентябрь',
+        10: 'Октяьрь',
+        11: 'Ноябрь',
+        12: 'Декабрь',
+    }
+    labels = []
+    positive_dataset = {
+        'label': 'Положительных',
+        'backgroundColor': 'rgba(161, 29, 53, 0.7)',
+        'data': [],
+    }
+    negative_dataset = {
+        'label': 'Отрицательных',
+        'backgroundColor': 'rgba(119, 191, 126, 0.7)',
+        'data': [],
+    }
+    for stat in researches_stats:
+        labels.append(' '.join([
+            months_map[stat['collect_date__month']],
+            str(stat['collect_date__year']),
+        ]))
+        positive_dataset['data'].append(stat['positive_count'])
+        negative_dataset['data'].append(stat['negative_count'])
+
+    return {'labels': labels, 'datasets': [positive_dataset, negative_dataset]}

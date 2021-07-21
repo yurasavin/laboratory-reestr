@@ -9,7 +9,7 @@ from apps.api.permissions import WriteEditDeletePermission
 from apps.patients.models import Patient
 from apps.requesters.models import Requester
 from apps.researches.models import Research
-from apps.researches.selectors import researches_list
+from apps.researches.selectors import researches_list, researches_stats
 from apps.researches.services import (research_create, research_export_to_xlsx,
                                       research_patch, research_remove)
 
@@ -371,3 +371,10 @@ class ResearchExportView(viewsets.GenericViewSet):
     def export(self, request, pk=None):
         response_bytes = research_export_to_xlsx(research_id=pk)
         return FileResponse(response_bytes, as_attachment=True)
+
+
+class ResearchStatsView(viewsets.GenericViewSet):
+    @action(methods=['get'], detail=False)
+    def stats(self, request):
+        response_data = researches_stats()
+        return Response(response_data)
