@@ -139,9 +139,6 @@ if not DEBUG:
 
     from sentry_sdk.integrations.django import DjangoIntegration
 
-    # from sentry_sdk.integrations.redis import RedisIntegration
-    # from sentry_sdk.integrations.tornado import TornadoIntegration
-
     sentry_sdk.init(
         dsn=env('SENTRY_DSN'),
         integrations=[
