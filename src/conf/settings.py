@@ -146,8 +146,6 @@ if not DEBUG:
         dsn=env('SENTRY_DSN'),
         integrations=[
             DjangoIntegration(),
-            # TornadoIntegration(),
-            # RedisIntegration(),
         ],
 
         # Set traces_sample_rate to 1.0 to capture 100%
