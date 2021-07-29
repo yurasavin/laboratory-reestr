@@ -5,9 +5,9 @@ ENV PYTHONUNBUFFERED 1
 ENV TERM=xterm
 
 COPY ./src /opt/app/src
-COPY ./requirements /opt/app/
+COPY ./requirements /opt/app/requirements
 COPY ./compose/django/entrypoint.sh /opt/app/
-RUN pip install --upgrade pip && pip install --requirement /opt/app/requirements/production.txt
+RUN pip install --upgrade pip && pip install --requirement /opt/app/requirements.txt
 
 WORKDIR /opt/app/src
 EXPOSE 8000
