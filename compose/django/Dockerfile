@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 ENV TERM=xterm
 
 COPY ./src /opt/app/src
-COPY ./requirements.txt /opt/app/
+COPY ./requirements/production.txt /opt/app/requirements.txt
 COPY ./compose/django/entrypoint.sh /opt/app/
 RUN pip install --upgrade pip && pip install --requirement /opt/app/requirements.txt
 
