@@ -1,0 +1,84 @@
+name: Django CI/CD Runner
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  testing:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8.5'
+
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements/local.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+          ${{ runner.os }}-
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements/local.txt
+    - name: Flake
+      run: |
+        flake8 --count src
+  push_to_registry:
+    needs: testing
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./compose/django/Dockerfile
+          push: true
+          tags: iriskin/laboratory-reestr-back:latest
+
+  deploy_to_server:
+    needs: push_to_registry
+    name: Deploy project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Deploy on the server
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )
+          eval $(ssh-agent -s)
+          echo "$PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          scp ./compose/docker-compose.yml $REMOTE_USER@$REMOTE_HOST:/home/laboratory-reestr/back/docker-compose.yml
+          scp ./compose/nginx/conf.d/config.conf $REMOTE_USER@$REMOTE_HOST:/home/laboratory-reestr/back/compose/nginx/conf.d/config.conf
+          ssh $REMOTE_USER@$REMOTE_HOST 'docker-compose -f /home/laboratory-reestr/back/docker-compose.yml pull'
+          ssh $REMOTE_USER@$REMOTE_HOST 'docker-compose -f /home/laboratory-reestr/back/docker-compose.yml stop'
+          ssh $REMOTE_USER@$REMOTE_HOST 'docker-compose -f /home/laboratory-reestr/back/docker-compose.yml up -d'

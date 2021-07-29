@@ -1,14 +1,19 @@
 version: "3.7"
 
+networks:
+    resources:
+        external: true
+
+
 services:
     django:
-        image: iriskin/laboratory-reestr:latest
+        image: iriskin/laboratory-reestr-back:latest
         volumes:
             - ./static:/opt/app/static
         env_file:
             - .env
         networks:
-            - train-hard
+            - resources
         restart: always
 
     django-static:
@@ -24,5 +29,5 @@ services:
         environment:
             - NGINX_PORT=80
         networks:
-            - train-hard
+            - resources
         restart: always
