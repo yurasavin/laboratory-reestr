@@ -40,8 +40,6 @@ services:
             - "traefik.enable=true"
 
             - "traefik.http.routers.laboratory-nginx.rule=Host(`laboratory.kvd-rostov.ru`) && Path(`/django-static`)) || Host(`laboratory.kvd-rostov.ru`) && Path(`/media`))"
-            django-static
             - "traefik.http.routers.laboratory-nginx.entrypoints=https"
             - "traefik.http.routers.laboratory-nginx.tls=true"
-            - "traefik.http.routers.laboratory-nginx.tls.certresolver=le"
         restart: always
