@@ -16,7 +16,7 @@ services:
         labels:
             - "traefik.enable=true"
 
-            - "traefik.http.routers.laboratory-django.rule=Host(`laboratory.kvd-rostov.ru`) && Path(`/admin`)) || Host(`laboratory.kvd-rostov.ru`) && Path(`/api`))"
+            - "traefik.http.routers.laboratory-django.rule=Host(`laboratory.kvd-rostov.ru`) && Path(`/admin`) || Host(`laboratory.kvd-rostov.ru`) && Path(`/api`)"
             - "traefik.http.routers.laboratory-django.entrypoints=https"
             - "traefik.http.routers.laboratory-django.tls=true"
             - "traefik.http.routers.laboratory-django.tls.certresolver=le"
@@ -39,7 +39,7 @@ services:
         labels:
             - "traefik.enable=true"
 
-            - "traefik.http.routers.laboratory-nginx.rule=Host(`laboratory.kvd-rostov.ru`) && Path(`/django-static`)) || Host(`laboratory.kvd-rostov.ru`) && Path(`/media`))"
+            - "traefik.http.routers.laboratory-nginx.rule=Host(`laboratory.kvd-rostov.ru`) && Path(`/django-static`) || Host(`laboratory.kvd-rostov.ru`) && Path(`/media`)"
             - "traefik.http.routers.laboratory-nginx.entrypoints=https"
             - "traefik.http.routers.laboratory-nginx.tls=true"
         restart: always
