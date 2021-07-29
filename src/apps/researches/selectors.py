@@ -11,7 +11,7 @@ class BaseResearchFilter(django_filters.FilterSet):
         model = Research
         fields = (
             'id', 'patient__first_name', 'patient__last_name',
-            'patient__middle_name'
+            'patient__middle_name',
         )
 
 
@@ -63,11 +63,12 @@ def researches_list(*, filters_and_searches=None):
 
 
 def researches_stats():
-    researches_stats = (Research.objects
+    researches_stats = (
+        Research.objects
         .values('collect_date__month', 'collect_date__year')
         .annotate(
-            positive_count=Count('id', filter=Q(result=ResearchResult.POSITIVE)),
-            negative_count=Count('id', filter=Q(result=ResearchResult.NEGATIVE)),
+            positive_count=Count('id', filter=Q(result=ResearchResult.POSITIVE)),  # noqa: #501
+            negative_count=Count('id', filter=Q(result=ResearchResult.NEGATIVE)),  # noqa: #501
         )
         .order_by('collect_date__year', 'collect_date__month')
     )

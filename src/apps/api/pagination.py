@@ -43,4 +43,3 @@ def get_paginated_response(*, pagination_class, serializer_class, queryset,
     serializer = serializer_class(queryset, many=True)
 
     return Response(data=serializer.data)
-

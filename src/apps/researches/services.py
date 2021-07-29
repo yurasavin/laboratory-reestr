@@ -59,7 +59,7 @@ def research_remove(*, research_id, user):
 def research_export_to_xlsx(*, research_id):
     research = Research.objects.get(id=research_id)
 
-    template_path = settings.BASE_DIR / 'src' / 'apps' / 'researches' / 'templates' / 'result_form.xlsx'
+    template_path = settings.BASE_DIR / 'src' / 'apps' / 'researches' / 'templates' / 'result_form.xlsx'  # noqa: #501
     wb = load_workbook(template_path)
     ws = wb.active
 
@@ -74,7 +74,7 @@ def research_export_to_xlsx(*, research_id):
 
     # ФИО
     if research.patient:
-        ws['E3'].value = f'{research.patient.last_name} {research.patient.first_name} {research.patient.middle_name}'
+        ws['E3'].value = f'{research.patient.last_name} {research.patient.first_name} {research.patient.middle_name}'  # noqa:E501
 
     # направлен из
     ws['G5'].value = research.requester.name

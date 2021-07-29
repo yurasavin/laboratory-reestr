@@ -97,19 +97,19 @@ class ResearchListView(viewsets.GenericViewSet):
 
         def get_collect_date_display(self, research):
             date = research.collect_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_result_date_display(self, research):
             date = research.result_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_analys_taken_date_display(self, research):
             date = research.analys_taken_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_analys_transport_date_display(self, research):
             date = research.analys_transport_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
     def list(self, request):
         filters_and_searches_serializer = self.FilterSerializer(
@@ -323,19 +323,19 @@ class ResearchPatchView(viewsets.GenericViewSet):
 
         def get_collect_date_display(self, research):
             date = research.collect_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_result_date_display(self, research):
             date = research.result_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_analys_taken_date_display(self, research):
             date = research.analys_taken_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
         def get_analys_transport_date_display(self, research):
             date = research.analys_transport_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')
+            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
 
     @action(methods=['post'], detail=False)
     def patch(self, request):

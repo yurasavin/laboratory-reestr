@@ -5,7 +5,7 @@ from django.db import models
 class UserRoles(models.IntegerChoices):
     READ_ONLY = 1, 'Только просмотр записей'
     READ_WRITE_EDIT = 2, 'Просмотр, создание и редактирование записей'
-    READ_WRITE_EDIT_DELETE = 3, 'Просмотр, создание редактирование и удаление записей'
+    READ_WRITE_EDIT_DELETE = 3, 'Просмотр, создание редактирование и удаление записей'  # noqa: #501
     ADMIN = 10, 'Администратор'
 
     @classmethod
