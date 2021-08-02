@@ -7,16 +7,14 @@ from django.utils import timezone
 from openpyxl import load_workbook
 
 from apps.patients.models import Patient
-from apps.requesters.models import Requester
 from apps.researches.models import Research
 
 
 def research_create(*, research_data, user):
     patient_data = research_data.pop('patient')
-    requester_data = research_data.pop('requester')
+    requester_id = research_data.pop('requester')['id']
 
     patient = Patient.objects.create(**patient_data, created_by=user)
-    requester = Requester.objects.create(**requester_data, created_by=user)
 
     researches = Research.objects.select_for_update()
     with transaction.atomic():
@@ -26,7 +24,7 @@ def research_create(*, research_data, user):
 
         research = Research.objects.create(
             total_num=total_num, daily_num=daily_num,
-            patient=patient, requester=requester, **research_data,
+            patient=patient, requester_id=requester_id, **research_data,
             created_by=user)
 
     return research
@@ -38,10 +36,7 @@ def research_patch(*, research_data, user):
     Patient.objects.filter(
         id=patient_id).update(**patient_data, updated_by=user)
 
-    requester_data = research_data.pop('requester')
-    requester_id = requester_data.pop('id')
-    Requester.objects.filter(
-        id=requester_id).update(**requester_data, updated_by=user)
+    research_data['requester_id'] = research_data.pop('requester')['id']
 
     research_id = research_data.pop('id')
     research = Research.objects.filter(id=research_id)

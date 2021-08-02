@@ -154,9 +154,11 @@ class ResearchCreateView(viewsets.GenericViewSet):
                 ]
 
         class RequesterSerializer(serializers.ModelSerializer):
+            id = serializers.IntegerField()
+
             class Meta:
                 model = Requester
-                fields = ['name', 'oms_id']
+                fields = ['id']
 
         patient = PatientSerializer(required=True)
         requester = RequesterSerializer(required=True)
@@ -222,7 +224,7 @@ class ResearchPatchView(viewsets.GenericViewSet):
 
             class Meta:
                 model = Requester
-                fields = ['id', 'name', 'oms_id']
+                fields = ['id']
 
         id = serializers.IntegerField()
         patient = PatientSerializer(required=True)
