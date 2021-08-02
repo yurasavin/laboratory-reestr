@@ -18,6 +18,7 @@ class ResearchReasons(models.IntegerChoices):
     COVID_19 = (10, 'COVID-19')
     CHRONIC_PHARYNGITIS = (11, 'Хронический фарингит')
     OTHER = (12, 'Другое')
+    ORVI = (13, 'ОРВИ')
 
 
 class ResearchResult(models.IntegerChoices):
