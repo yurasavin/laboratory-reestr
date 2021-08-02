@@ -22,7 +22,6 @@ class PatientFactory(DjangoModelFactory):
     insurance_number = Faker('msisdn')
     insurance_company_id = Sequence(lambda n: n)
     self_phone = Faker('phone_number')
-    work_phone = Faker('phone_number')
     reg_address = Faker('street_address')
     fact_address = Faker('street_address')
     work_address = Faker('street_address')

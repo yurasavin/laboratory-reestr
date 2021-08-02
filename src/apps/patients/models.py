@@ -58,12 +58,6 @@ class Patient(TimeStampedByUserModel):
         default='',
         blank=True,
     )
-    work_phone = models.CharField(
-        'Рабочий номер телефона',
-        max_length=64,
-        default='',
-        blank=True,
-    )
     reg_address = models.CharField(
         'Адрес регистрации',
         max_length=512,
