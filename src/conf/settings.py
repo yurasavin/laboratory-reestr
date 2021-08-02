@@ -154,3 +154,6 @@ if not DEBUG:
         # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
     )
+
+# Constants
+RESEARCH_NUM_OFFSET = 94215
