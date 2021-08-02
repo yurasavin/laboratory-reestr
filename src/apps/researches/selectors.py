@@ -99,8 +99,8 @@ def researches_stats():
     }
     for stat in researches_stats:
         labels.append(' '.join([
-            months_map[stat['collect_date__month']],
-            str(stat['collect_date__year']),
+            months_map[stat['result_date__month']],
+            str(stat['result_date__year']),
         ]))
         positive_dataset['data'].append(stat['positive_count'])
         negative_dataset['data'].append(stat['negative_count'])
