@@ -56,7 +56,8 @@ def research_remove(*, research_id, user):
         deleted=True, updated_by=user)
 
 
-def research_export_to_xlsx(*, research_id):
+def research_export_to_xlsx(
+        *, research_id, reagents, series, expiration_date, doctor):
     research = Research.objects.get(id=research_id)
 
     template_path = settings.BASE_DIR / 'src' / 'apps' / 'researches' / 'templates' / 'result_form.xlsx'  # noqa: #501
@@ -67,7 +68,7 @@ def research_export_to_xlsx(*, research_id):
     if research.result_date:
         value = research.result_date.astimezone()
         value = format_date(value, '«dd» MMMM Y г.', locale='ru_RU')
-        ws['A3'].value = ws['C24'].value = value
+        ws['A3'].value = ws['C22'].value = value
 
     # номер анализа
     ws['B4'].value = research.total_num
@@ -89,6 +90,14 @@ def research_export_to_xlsx(*, research_id):
 
     # результат
     ws['E13'].value = research.get_result_display().upper()
+
+    # набор реагентов
+    expiration_date = '.'.join(reversed(expiration_date.split('-')))
+    reagents_full = f'{reagents} серия {series}, годен до {expiration_date} г.'
+    ws['A15'].value = reagents_full
+
+    # выполнил результат
+    ws['A18'].value += doctor
 
     buffer = io.BytesIO()
     wb.save(buffer)

@@ -363,9 +363,20 @@ class ResearchRemoveView(viewsets.GenericViewSet):
 
 
 class ResearchExportView(viewsets.GenericViewSet):
-    @action(methods=['get'], detail=True)
+    class InputSerializer(serializers.Serializer):
+        reagents = serializers.CharField()
+        series = serializers.CharField()
+        expiration_date = serializers.CharField()
+        doctor = serializers.CharField()
+
+    @action(methods=['post'], detail=True)
     def export(self, request, pk=None):
-        response_bytes = research_export_to_xlsx(research_id=pk)
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        response_bytes = research_export_to_xlsx(
+            research_id=pk, **input_serializer.validated_data)
+
         return FileResponse(response_bytes, as_attachment=True)
 
 
