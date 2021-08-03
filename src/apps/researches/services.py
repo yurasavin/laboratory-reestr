@@ -23,12 +23,12 @@ def research_create(*, research_data, user):
 
         try:
             research = Research.objects.create(
-                total_num=total_num, patient=patient, requester_id=requester_id,
-                **research_data, created_by=user)
+                total_num=total_num, patient=patient,
+                requester_id=requester_id, **research_data, created_by=user)
         except IntegrityError as exc:
             if 'violates unique constraint "daily_num_and_date"' in str(exc):
                 error_data = {
-                    'field': ['Данный номер за день уже используется']
+                    'field': ['Данный номер за день уже используется'],
                 }
                 return error_data, False
 
@@ -51,7 +51,7 @@ def research_patch(*, research_data, user):
     except IntegrityError as exc:
         if 'violates unique constraint "daily_num_and_date"' in str(exc):
             error_data = {
-                'field': ['Данный номер за день уже используется']
+                'field': ['Данный номер за день уже используется'],
             }
             return error_data, False
 

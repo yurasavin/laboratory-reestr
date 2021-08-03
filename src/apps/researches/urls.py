@@ -9,6 +9,6 @@ router.register('researches', apis.ResearchPatchView, basename='researches')
 router.register('researches', apis.ResearchRemoveView, basename='researches')
 router.register('researches', apis.ResearchExportView, basename='researches')
 router.register('researches', apis.ResearchStatsView, basename='researches')
-router.register('researches', apis.ResearchDailyExportView, basename='researches')
+router.register('researches', apis.ResearchDailyExportView, basename='researches')  # noqa: #501
 
 urlpatterns = router.urls
