@@ -11,7 +11,8 @@ from apps.requesters.models import Requester
 from apps.researches.models import Research
 from apps.researches.selectors import researches_list, researches_stats
 from apps.researches.services import (research_create, research_export_to_xlsx,
-                                      research_patch, research_remove)
+                                      research_patch, research_remove,
+                                      researches_daily_export)
 
 
 class ResearchListView(viewsets.GenericViewSet):
@@ -96,19 +97,19 @@ class ResearchListView(viewsets.GenericViewSet):
 
         def get_collect_date_display(self, research):
             date = research.collect_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_result_date_display(self, research):
             date = research.result_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_analys_taken_date_display(self, research):
             date = research.analys_taken_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_analys_transport_date_display(self, research):
             date = research.analys_transport_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
     def list(self, request):
         filters_and_searches_serializer = self.FilterSerializer(
@@ -185,10 +186,12 @@ class ResearchCreateView(viewsets.GenericViewSet):
         input_serializer = self.InputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
-        research_create(
+        ret, result = research_create(
             research_data=input_serializer.validated_data, user=request.user)
 
-        return Response(status=status.HTTP_201_CREATED)
+        if result:
+            return Response(status=status.HTTP_201_CREATED)
+        return Response(ret, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResearchPatchView(viewsets.GenericViewSet):
@@ -323,30 +326,32 @@ class ResearchPatchView(viewsets.GenericViewSet):
 
         def get_collect_date_display(self, research):
             date = research.collect_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_result_date_display(self, research):
             date = research.result_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_analys_taken_date_display(self, research):
             date = research.analys_taken_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
         def get_analys_transport_date_display(self, research):
             date = research.analys_transport_date
-            return None if not date else date.astimezone().strftime('%d.%m.%Y %H:%M')  # noqa: #501
+            return None if not date else date.strftime('%d.%m.%Y')
 
     @action(methods=['post'], detail=False)
     def patch(self, request):
         input_serializer = self.InputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
-        research = research_patch(
+        ret, result = research_patch(
             research_data=input_serializer.validated_data, user=request.user)
-        output_data = self.OutputSerializer(instance=research).data
 
-        return Response(output_data, status=status.HTTP_200_OK)
+        if result:
+            output_data = self.OutputSerializer(instance=ret).data
+            return Response(output_data, status=status.HTTP_200_OK)
+        return Response(ret, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResearchRemoveView(viewsets.GenericViewSet):
@@ -389,3 +394,18 @@ class ResearchStatsView(viewsets.GenericViewSet):
     def stats(self, request):
         response_data = researches_stats()
         return Response(response_data)
+
+
+class ResearchDailyExportView(viewsets.GenericViewSet):
+    class InputSerializer(serializers.Serializer):
+        date = serializers.DateField()
+
+    @action(methods=['post'], detail=False, url_path='daily-export')
+    def daily_export(self, request):
+        input_serializer = self.InputSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
+
+        response_bytes = researches_daily_export(
+            date=input_serializer.validated_data['date'])
+
+        return FileResponse(response_bytes, as_attachment=True)

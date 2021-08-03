@@ -53,17 +53,13 @@ class Research(TimeStampedByUserModel):
         choices=ResearchReasons.choices,
         db_index=True,
     )
-    collect_date = models.DateTimeField(
-        'Дата поступления',
-        null=True,
-        db_index=True,
-        blank=True)
-    result_date = models.DateTimeField(
+    collect_date = models.DateField('Дата поступления', db_index=True)
+    result_date = models.DateField(
         'Дата выдачи ответа',
         null=True,
         db_index=True,
         blank=True)
-    analys_taken_date = models.DateTimeField(
+    analys_taken_date = models.DateField(
         'Дата взятия образца',
         null=True,
         db_index=True,
@@ -75,7 +71,7 @@ class Research(TimeStampedByUserModel):
         db_index=True,
         blank=True,
     )
-    analys_transport_date = models.DateTimeField(
+    analys_transport_date = models.DateField(
         'Дата транспортировки образца',
         null=True,
         db_index=True,
@@ -104,9 +100,9 @@ class Research(TimeStampedByUserModel):
     deleted = models.BooleanField(default=False, db_index=True)
 
     class Meta:
-        ordering = [models.F('total_num').desc(nulls_last=False)],
+        ordering = [models.F('total_num').desc(nulls_last=False)]
         constraints = [
-            models.UniqueConstraint(fields=['daily_num', 'created_at'],
+            models.UniqueConstraint(fields=['daily_num', 'collect_date'],
                                     name='daily_num_and_date'),
         ]
 
