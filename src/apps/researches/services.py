@@ -145,7 +145,7 @@ def researches_daily_export(*, date):
         ws[f'H{row}'].value = research.get_result_display()
         ws[f'I{row}'].value = research.result_date.strftime('%d.%m.%Y')
 
-        for letter in 'ABCDEFGHI':
+        for letter in 'ABCDEFGHIK':
             if letter not in 'EF':
                 ws[f'{letter}{row}'].alignment = alignment
             ws[f'{letter}{row}'].border = border
