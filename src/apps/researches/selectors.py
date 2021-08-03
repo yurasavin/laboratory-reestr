@@ -65,12 +65,13 @@ def researches_list(*, filters_and_searches=None):
 def researches_stats():
     researches_stats = (
         Research.objects
-        .values('collect_date__month', 'collect_date__year')
+        .exclude(result_date=None)
+        .values('result_date__month', 'result_date__year')
         .annotate(
             positive_count=Count('id', filter=Q(result=ResearchResult.POSITIVE)),  # noqa: #501
             negative_count=Count('id', filter=Q(result=ResearchResult.NEGATIVE)),  # noqa: #501
         )
-        .order_by('collect_date__year', 'collect_date__month')
+        .order_by('result_date__year', 'result_date__month')
     )
     months_map = {
         1: 'Январь',
