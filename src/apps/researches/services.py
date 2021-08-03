@@ -3,7 +3,6 @@ import io
 from babel.dates import format_date
 from django.conf import settings
 from django.db import transaction
-from django.utils import timezone
 from openpyxl import load_workbook
 
 from apps.patients.models import Patient
@@ -18,14 +17,11 @@ def research_create(*, research_data, user):
 
     researches = Research.objects.select_for_update()
     with transaction.atomic():
-        today = timezone.make_naive(timezone.now()).date()
         total_num = settings.RESEARCH_NUM_OFFSET + researches.count() + 1
-        daily_num = researches.filter(created_at__date=today).count() + 1
 
         research = Research.objects.create(
-            total_num=total_num, daily_num=daily_num,
-            patient=patient, requester_id=requester_id, **research_data,
-            created_by=user)
+            total_num=total_num, patient=patient, requester_id=requester_id,
+            **research_data, created_by=user)
 
     return research
 

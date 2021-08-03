@@ -166,6 +166,7 @@ class ResearchCreateView(viewsets.GenericViewSet):
         class Meta:
             model = Research
             fields = [
+                'daily_num',
                 'patient',
                 'requester',
                 'reason',
@@ -234,6 +235,7 @@ class ResearchPatchView(viewsets.GenericViewSet):
             model = Research
             fields = [
                 'id',
+                'daily_num',
                 'patient',
                 'requester',
                 'reason',
