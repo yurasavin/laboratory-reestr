@@ -104,7 +104,11 @@ class Research(TimeStampedByUserModel):
     deleted = models.BooleanField(default=False, db_index=True)
 
     class Meta:
-        ordering = [models.F('total_num').desc(nulls_last=False)]
+        ordering = [models.F('total_num').desc(nulls_last=False)],
+        constraints = [
+            models.UniqueConstraint(fields=['daily_num', 'created_at'],
+                                    name='daily_num_and_date'),
+        ]
 
     def __str__(self):
         return f'{self.id}'
