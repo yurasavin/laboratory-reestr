@@ -130,6 +130,7 @@ def researches_daily_export(*, date):
     side = Side(style='thin')
     border = Border(left=side, top=side, right=side, bottom=side)
     alignment = Alignment(horizontal='center', vertical='center')
+    alignment_only_center = Alignment(vertical='center')
 
     row = 2
     for research in researches:
@@ -146,7 +147,9 @@ def researches_daily_export(*, date):
         ws[f'I{row}'].value = research.result_date.strftime('%d.%m.%Y')
 
         for letter in 'ABCDEFGHIK':
-            if letter not in 'EF':
+            if letter in 'EF':
+                ws[f'{letter}{row}'].alignment = alignment_only_center
+            else:
                 ws[f'{letter}{row}'].alignment = alignment
             ws[f'{letter}{row}'].border = border
 
