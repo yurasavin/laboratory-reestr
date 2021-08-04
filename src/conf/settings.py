@@ -156,4 +156,4 @@ if not DEBUG:
     )
 
 # Constants
-RESEARCH_NUM_OFFSET = 94215
+RESEARCH_NUM_OFFSET = env.int('RESEARCH_NUM_OFFSET', default=0)
